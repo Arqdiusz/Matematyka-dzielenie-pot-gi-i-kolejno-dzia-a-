@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matematyka dla klasy 4 – dzielenie, potęgi i kolejność działań</title>
+<style>
+  * { box-sizing:border-box; }
+  body { margin:0; padding:16px; color:#273244; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:#fffaf3; }
+  .app { max-width:640px; margin:0 auto; }
+  header { background:#fff; border:2px solid #ffe0b2; border-radius:20px; padding:16px; text-align:center; margin-bottom:12px; box-shadow:0 3px 0 #ffe0b2; }
+  h1 { margin:0; font-size:22px; color:#f97316; line-height:1.25; }
+  .subtitle { margin:4px 0 0; color:#7c6f64; font-size:14px; }
+  nav { position:sticky; top:8px; z-index:20; background:#ffffffee; backdrop-filter:blur(6px); border:2px solid #e5e7eb; border-radius:16px; padding:8px; display:flex; gap:6px; overflow-x:auto; margin-bottom:14px; box-shadow:0 3px 0 #e5e7eb; }
+  nav::-webkit-scrollbar { display:none; }
+  .nav-btn { flex:0 0 auto; border:none; cursor:pointer; font-size:14px; font-weight:800; padding:10px 12px; border-radius:12px; color:#4b5563; background:#f3f4f6; white-space:nowrap; }
+  .nav-btn.names.active { background:#8b5cf6; color:#fff; box-shadow:0 3px 0 #6d28d9; }
+  .nav-btn.division.active { background:#3b82f6; color:#fff; box-shadow:0 3px 0 #1d4ed8; }
+  .nav-btn.powers.active { background:#ec4899; color:#fff; box-shadow:0 3px 0 #be185d; }
+  .nav-btn.order.active { background:#14b8a6; color:#fff; box-shadow:0 3px 0 #0f766e; }
+  .nav-btn.quiz.active { background:#22c55e; color:#fff; box-shadow:0 3px 0 #15803d; }
+  .screen { display:none; }
+  .screen.active { display:block; animation:fade .18s ease; }
+  @keyframes fade { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:none; } }
+  .card { background:#fff; border:2px solid #fde68a; border-radius:20px; padding:18px; margin-bottom:14px; box-shadow:0 4px 0 #fde68a; }
+  .card h2 { margin:0 0 10px; font-size:21px; color:#f97316; }
+  .card h3 { margin:0 0 8px; font-size:18px; color:#334155; }
+  .card p { margin:0 0 10px; line-height:1.55; font-size:16px; }
+  .example { background:#eff6ff; border:2px solid #bfdbfe; border-radius:14px; padding:12px; margin:10px 0; font-weight:700; font-size:16px; color:#1e40af; }
+  .example .steps { display:block; margin-top:6px; font-weight:600; color:#1d4ed8; }
+  .notebook { background:#fffbeb; border:2px dashed #f59e0b; border-radius:14px; padding:12px; margin:10px 0; font-size:15px; color:#92400e; font-weight:800; }
+  .important { background:#fef2f2; border:2px solid #fecaca; border-radius:14px; padding:12px; margin:10px 0; font-weight:800; font-size:15px; color:#b91c1c; }
+  .tip { background:#f0fdf4; border:2px solid #bbf7d0; border-radius:14px; padding:12px; margin:10px 0; font-size:15px; color:#166534; }
+  .vocab { background:#faf5ff; border:2px solid #e9d5ff; border-radius:14px; padding:12px; margin:10px 0; font-size:16px; color:#6b21a8; }
+  .vocab b { color:#7c3aed; }
+  ol { margin:8px 0 10px 20px; padding:0; }
+  li { margin:6px 0; font-size:16px; }
+  .slide { display:none; }
+  .slide.active { display:block; animation:fade .18s ease; }
+  .ready { display:none; margin-top:14px; background:#ecfdf5; border:2px solid #6ee7b7; border-radius:16px; padding:14px; text-align:center; }
+  .ready.show { display:block; animation:fade .2s ease; }
+  .ready p { margin:0 0 10px; font-weight:800; color:#047857; font-size:17px; }
+  .ready button { border:none; cursor:pointer; font-weight:800; font-size:16px; color:#fff; background:#22c55e; padding:12px 20px; border-radius:14px; box-shadow:0 4px 0 #15803d; }
+  .controls { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:14px; }
+  .nav { border:none; cursor:pointer; font-weight:800; font-size:15px; padding:12px 18px; border-radius:14px; color:#fff; background:#f97316; box-shadow:0 4px 0 #c2410c; }
+  .nav:disabled { background:#e5e7eb; color:#9ca3af; box-shadow:none; cursor:not-allowed; }
+  .counter { font-size:14px; font-weight:800; color:#7c6f64; text-align:center; flex:1; }
+  .dots { display:flex; gap:7px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+  .dot { width:12px; height:12px; border-radius:50%; background:#fde68a; border:none; cursor:pointer; }
+  .dot.active { background:#f97316; }
+  .topic { font-size:17px; font-weight:800; color:#f97316; margin:18px 0 8px; }
+  .q { background:#fff; border:2px solid #e5e7eb; border-radius:16px; padding:14px; margin-bottom:10px; }
+  .q b { display:block; margin-bottom:10px; font-size:16px; line-height:1.45; }
+  input { width:100px; padding:10px; font-size:18px; font-weight:800; text-align:center; border:2px solid #fdba74; border-radius:12px; color:#334155; background:#fff; }
+  input:focus { outline:none; border-color:#f97316; }
+  .answer-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .answer-label { font-weight:800; color:#475569; font-size:15px; }
+  .feedback { font-weight:800; font-size:15px; }
+  .ok { color:#16a34a; }
+  .bad { color:#dc2626; }
+  .check { width:100%; border:none; cursor:pointer; font-size:17px; font-weight:800; padding:15px; border-radius:16px; color:#fff; background:#22c55e; box-shadow:0 4px 0 #15803d; margin-top:8px; }
+  .generate { width:100%; border:none; cursor:pointer; font-size:16px; font-weight:800; padding:14px; border-radius:16px; color:#fff; background:#3b82f6; box-shadow:0 4px 0 #1d4ed8; margin-top:10px; }
+  .score { margin-top:12px; font-size:19px; font-weight:800; color:#f97316; text-align:center; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>🍊 Matematyka: dzielenie, potęgi i kolejność działań</h1>
+    <p class="subtitle">Powtórka i sprawdzian dla klasy 4</p>
+  </header>
+  <nav>
+    <button class="nav-btn names active" id="nav-names" onclick="goToSlide(0,this)">Nazwy</button>
+    <button class="nav-btn division" id="nav-division" onclick="goToSlide(1,this)">Dzielenie</button>
+    <button class="nav-btn powers" id="nav-powers" onclick="goToSlide(4,this)">Potęgi</button>
+    <button class="nav-btn order" id="nav-order" onclick="goToSlide(7,this)">Kolejność działań</button>
+    <button class="nav-btn quiz" id="nav-quiz" onclick="goToQuiz(this)">Sprawdzian</button>
+  </nav>
+  <section id="repeat" class="screen active">
+    <div class="card">
+      <div class="slide active" data-slide="0">
+        <h2>Najpierw nazwy</h2>
+        <h3>W dzieleniu</h3>
+        <div class="vocab"><b>Dzielna</b> – liczba, którą dzielimy.<br><b>Dzielnik</b> – liczba, przez którą dzielimy.<br><b>Iloraz</b> – wynik dzielenia.<br><b>Reszta</b> – to, co zostaje, gdy nie da się podzielić równo.</div>
+        <div class="example">47 : 6 = 7 reszty 5<br>47 – dzielna<br>6 – dzielnik<br>7 – iloraz<br>5 – reszta</div>
+        <h3>W potęgach</h3>
+        <div class="vocab"><b>Podstawa potęgi</b> – liczba, którą mnożymy przez siebie.<br><b>Wykładnik</b> – mała liczba u góry; mówi, ile razy mnożymy.</div>
+        <div class="example">2³<br>2 – podstawa potęgi<br>3 – wykładnik<br>2³ = 2 · 2 · 2 = 8</div>
+        <div class="notebook">📝 Ważne: w zeszycie zawsze zapisuj działanie i kolejne kroki. Nie licz tylko w pamięci.</div>
+      </div>
+      <div class="slide" data-slide="1">
+        <h2>Dzielenie z resztą</h2>
+        <h3>Czym jest reszta?</h3>
+        <p>Czasem nie da się podzielić czegoś równo. To, co zostaje, nazywamy <b>resztą</b>.</p>
+        <div class="example">47 : 6<span class="steps">6 · 7 = 42<br>47 − 42 = 5<br>47 : 6 = 7 reszty 5</span></div>
+        <div class="notebook">📝 Zapisz w zeszycie: najpierw mnożenie, potem odejmowanie, a na końcu wynik z resztą.</div>
+        <div class="tip">Reszta jest zawsze mniejsza od dzielnika.</div>
+      </div>
+      <div class="slide" data-slide="2">
+        <h2>Dzielenie z resztą</h2>
+        <h3>Jak obliczyć?</h3>
+        <ol><li>Pomnóż dzielnik przez możliwie dużą liczbę.</li><li>Odejmij otrzymany wynik.</li><li>To, co zostało, to reszta.</li></ol>
+        <div class="example">23 : 4<span class="steps">4 · 5 = 20<br>23 − 20 = 3<br>23 : 4 = 5 reszty 3</span></div>
+        <div class="example">50 : 7<span class="steps">7 · 7 = 49<br>50 − 49 = 1<br>50 : 7 = 7 reszty 1</span></div>
+        <div class="notebook">📝 Rozpisuj każdy przykład w zeszycie: mnożenie, odejmowanie i wynik.</div>
+      </div>
+      <div class="slide" data-slide="3">
+        <h2>Dzielenie z resztą</h2>
+        <h3>Sprawdź wynik</h3>
+        <div class="example">iloraz · dzielnik + reszta = dzielna</div>
+        <div class="example">47 : 6 = 7 reszty 5<span class="steps">7 · 6 = 42<br>42 + 5 = 47 ✔</span></div>
+        <div class="important">Reszta nie może być równa dzielnikowi ani większa od niego.</div>
+        <div class="notebook">📝 Sprawdzenie też zapisz w zeszycie — dzięki temu łatwo zauważysz błąd.</div>
+      </div>
+      <div class="slide" data-slide="4">
+        <h2>Potęgi</h2>
+        <h3>Czym jest potęga?</h3>
+        <p>Potęga to wielokrotne mnożenie tej samej liczby przez siebie.</p>
+        <div class="example">2³ = 2 · 2 · 2 = 8</div>
+        <div class="example">5² = 5 · 5 = 25</div>
+        <div class="tip">W 2³ liczba 2 to <b>podstawa potęgi</b>, a 3 to <b>wykładnik</b>.</div>
+        <div class="notebook">📝 W zeszycie rozpisz potęgę na mnożenie, a dopiero potem oblicz wynik.</div>
+      </div>
+      <div class="slide" data-slide="5">
+        <h2>Potęgi</h2>
+        <h3>Więcej przykładów</h3>
+        <div class="example">3⁴ = 3 · 3 · 3 · 3 = 81</div>
+        <div class="example">2⁴ = 2 · 2 · 2 · 2 = 16</div>
+        <div class="example">4² = 4 · 4 = 16</div>
+        <div class="important">Wykładnik mówi, ile razy mnożymy podstawę przez siebie.</div>
+        <div class="notebook">📝 Nie wpisuj od razu wyniku. Najpierw zapisz mnożenie, np. 3 · 3 · 3 · 3.</div>
+      </div>
+      <div class="slide" data-slide="6">
+        <h2>Potęgi</h2>
+        <h3>Potęgi w zadaniach</h3>
+        <div class="example">2³ · 5<span class="steps">2³ = 2 · 2 · 2 = 8<br>8 · 5 = 40</span></div>
+        <div class="example">3⁴ + 2²<span class="steps">3⁴ = 81<br>2² = 4<br>81 + 4 = 85</span></div>
+        <div class="notebook">📝 Najpierw oblicz każdą potęgę osobno, zapisz wyniki, a potem wykonaj pozostałe działanie.</div>
+      </div>
+      <div class="slide" data-slide="7">
+        <h2>Kolejność działań</h2>
+        <h3>Pamiętaj o kolejności</h3>
+        <ol><li>Nawiasy</li><li>Potęgi</li><li>Mnożenie i dzielenie</li><li>Dodawanie i odejmowanie</li></ol>
+        <div class="tip">Najpierw nawiasy, potem potęgi, potem mnożenie i dzielenie.</div>
+        <div class="notebook">📝 W zeszycie podkreślaj lub zakreślaj, które działanie liczysz jako pierwsze.</div>
+      </div>
+      <div class="slide" data-slide="8">
+        <h2>Kolejność działań</h2>
+        <h3>Przykłady</h3>
+        <div class="example">8 + 3 · 4<span class="steps">3 · 4 = 12<br>8 + 12 = 20</span></div>
+        <div class="example">18 : 3 + 2²<span class="steps">2² = 4<br>18 : 3 = 6<br>6 + 4 = 10</span></div>
+        <div class="important">Nie licz zawsze od lewej do prawej.</div>
+        <div class="notebook">📝 Zapisz działanie, potem pod nim kolejne kroki. Każdy krok w nowej linijce.</div>
+      </div>
+      <div class="slide" data-slide="9">
+        <h2>Kolejność działań</h2>
+        <h3>Nawiasy</h3>
+        <p>To, co jest w nawiasie, liczymy jako pierwsze.</p>
+        <div class="example">(12 − 4) : 2<span class="steps">12 − 4 = 8<br>8 : 2 = 4</span></div>
+        <div class="example">5 · (3 + 4) − 10<span class="steps">3 + 4 = 7<br>5 · 7 = 35<br>35 − 10 = 25</span></div>
+        <div class="notebook">📝 Najpierw przepisz działanie z nawiasem, oblicz nawias, a potem wykonuj kolejne działania.</div>
+      </div>
+      <div class="ready" id="readyBox">
+        <p>🎉 Gotowy na sprawdzian? Zaczynajmy!</p>
+        <button onclick="goToQuiz(document.getElementById('nav-quiz'))">✏️ Zaczynamy sprawdzian</button>
+      </div>
+      <div class="controls">
+        <button class="nav" id="prevBtn" onclick="changeSlide(-1)">Wstecz</button>
+        <div class="counter" id="counter">Slajd 1 z 10</div>
+        <button class="nav" id="nextBtn" onclick="changeSlide(1)">Dalej</button>
+      </div>
+      <div class="dots" id="dots"></div>
+    </div>
+  </section>
+  <section id="quiz" class="screen">
+    <div class="card">
+      <h2>Sprawdzian</h2>
+      <p>Wszystkie wyniki są liczbami całkowitymi. W zadaniach z pełnym wynikiem wpisz iloraz i resztę osobno.</p>
+      <div id="quizBox"></div>
+      <button class="check" onclick="checkQuiz()">Sprawdź odpowiedzi</button>
+      <button class="generate" onclick="generateQuiz()">🔄 Wygeneruj nowy sprawdzian</button>
+      <div class="score" id="score"></div>
+    </div>
+  </section>
+</div>
+<script>
+let current = 0;
+let quiz = [];
+const slides = document.querySelectorAll('.slide');
+const dotsBox = document.getElementById('dots');
+slides.forEach((_, i) => {
+  const dot = document.createElement('button');
+  dot.className = 'dot' + (i === 0 ? ' active' : '');
+  dot.setAttribute('aria-label', 'Slajd ' + (i+1));
+  dot.onclick = () => goToSlide(i);
+  dotsBox.appendChild(dot);
+});
+function clearNav(){ document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active')); }
+function showScreen(id, btn){
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+function setActiveNav(){
+  clearNav();
+  if (current <= 0) document.getElementById('nav-names').classList.add('active');
+  else if (current <= 3) document.getElementById('nav-division').classList.add('active');
+  else if (current <= 6) document.getElementById('nav-powers').classList.add('active');
+  else document.getElementById('nav-order').classList.add('active');
+}
+function goToSlide(index, btn){
+  current = index; updateSlide();
+  showScreen('repeat', null);
+  setActiveNav();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function goToQuiz(btn){
+  if (!quiz.length) generateQuiz(false);
+  showScreen('quiz', null);
+  clearNav();
+  document.getElementById('nav-quiz').classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function updateSlide(){
+  slides.forEach((s,i) => s.classList.toggle('active', i === current));
+  document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i === current));
+  document.getElementById('counter').textContent = 'Slajd ' + (current+1) + ' z ' + slides.length;
+  document.getElementById('prevBtn').disabled = current === 0;
+  document.getElementById('nextBtn').disabled = current === slides.length - 1;
+  document.getElementById('readyBox').classList.toggle('show', current === slides.length - 1);
+  setActiveNav();
+}
+function changeSlide(direction){
+  current = Math.min(Math.max(current + direction, 0), slides.length - 1);
+  updateSlide();
+}
+function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function makeDivisionQuestion(){
+  const divisor = rand(2,9), quotient = rand(2,12), remainder = rand(0,divisor-1);
+  const dividend = divisor*quotient + remainder;
+  const type = rand(1,5);
+  if (type <= 3) return {full:true, text:`Oblicz i podaj cały wynik: ${dividend} : ${divisor} =`, quotient, remainder};
+  if (type === 4) return {text:`Jaka jest reszta z dzielenia ${dividend} : ${divisor}?`, answer:remainder};
+  return {text:`Ile wynosi iloraz w dzieleniu ${dividend} : ${divisor}?`, answer:quotient};
+}
+function makePowerQuestion(){
+  const type = rand(1,3);
+  if (type === 1) {
+    const base = rand(2,3), exponent = rand(2,4);
+    return {text:`Oblicz: ${base}<sup>${exponent}</sup> =`, answer:base**exponent};
+  }
+  if (type === 2) {
+    const base = rand(2,3), exponent = rand(2,4), multiplier = rand(2,9);
+    return {text:`Oblicz: ${base}<sup>${exponent}</sup> · ${multiplier} =`, answer:(base**exponent)*multiplier};
+  }
+  const base = rand(2,3), base2 = rand(2,3), exp1 = rand(2,4);
+  return {text:`Oblicz: ${base}<sup>${exp1}</sup> + ${base2}<sup>2</sup> =`, answer:base**exp1+base2**2};
+}
+function makeOrderQuestion(){
+  const type = rand(1,4);
+  if (type === 1) {
+    const a=rand(2,15), b=rand(2,9), c=rand(2,9);
+    return {text:`Oblicz: ${a} + ${b} · ${c} =`, answer:a+b*c};
+  }
+  if (type === 2) {
+    const c=rand(2,6), quotient=rand(2,9), inner=quotient*c, b=rand(1,9), a=inner+b;
+    return {text:`Oblicz: (${a} − ${b}) : ${c} =`, answer:quotient};
+  }
+  if (type === 3) {
+    const b=rand(2,6), quotient=rand(2,9), a=quotient*b, base=rand(2,3), exponent=rand(2,3);
+    return {text:`Oblicz: ${a} : ${b} + ${base}<sup>${exponent}</sup> =`, answer:quotient+base**exponent};
+  }
+  const a=rand(2,7), b=rand(1,9), c=rand(1,9), d=rand(1,Math.min(20,a*(b+c)-1));
+  return {text:`Oblicz: ${a} · (${b} + ${c}) − ${d} =`, answer:a*(b+c)-d};
+}
+function generateQuiz(scroll=true){
+  quiz = [];
+  for (let i=0;i<5;i++) quiz.push(makeDivisionQuestion());
+  for (let i=0;i<4;i++) quiz.push(makePowerQuestion());
+  for (let i=0;i<4;i++) quiz.push(makeOrderQuestion());
+  const box = document.getElementById('quizBox');
+  box.innerHTML = '';
+  const topics = [{name:'Dzielenie z resztą',count:5},{name:'Potęgi',count:4},{name:'Kolejność działań',count:4}];
+  let index = 0;
+  topics.forEach(topic => {
+    const heading = document.createElement('div');
+    heading.className = 'topic';
+    heading.textContent = topic.name;
+    box.appendChild(heading);
+    for (let i=0;i<topic.count;i++){
+      const q = quiz[index];
+      const div = document.createElement('div');
+      div.className = 'q';
+      div.innerHTML = `<b>${index+1}. ${q.text}</b>`;
+      const row = document.createElement('div');
+      row.className = 'answer-row';
+      if (q.full) {
+        row.innerHTML = '<span class="answer-label">iloraz:</span>';
+        const qi = document.createElement('input'); qi.type='number'; qi.id='quiz'+index+'q';
+        row.appendChild(qi);
+        const label = document.createElement('span'); label.className='answer-label'; label.textContent='reszta:';
+        row.appendChild(label);
+        const ri = document.createElement('input'); ri.type='number'; ri.id='quiz'+index+'r';
+        row.appendChild(ri);
+      } else {
+        const input = document.createElement('input'); input.type='number'; input.id='quiz'+index;
+        row.appendChild(input);
+      }
+      const feedback = document.createElement('span');
+      feedback.className='feedback'; feedback.id='feedback'+index;
+      row.appendChild(feedback);
+      div.appendChild(row);
+      box.appendChild(div);
+      index++;
+    }
+  });
+  document.getElementById('score').textContent = '';
+  if (scroll) window.scrollTo({top:0, behavior:'smooth'});
+}
+function checkQuiz(){
+  let score = 0;
+  quiz.forEach((q,i) => {
+    const feedback = document.getElementById('feedback'+i);
+    if (q.full) {
+      const qv = document.getElementById('quiz'+i+'q').value;
+      const rv = document.getElementById('quiz'+i+'r').value;
+      if (qv === '' || rv === '') { feedback.textContent='wpisz iloraz i resztę'; feedback.className='feedback bad'; return; }
+      if (Number(qv) === q.quotient && Number(rv) === q.remainder) { feedback.textContent='✔ dobrze'; feedback.className='feedback ok'; score++; }
+      else { feedback.textContent='✘ spróbuj jeszcze raz'; feedback.className='feedback bad'; }
+    } else {
+      const value = document.getElementById('quiz'+i).value;
+      if (value === '') { feedback.textContent='wpisz wynik'; feedback.className='feedback bad'; return; }
+      if (Number(value) === q.answer) { feedback.textContent='✔ dobrze'; feedback.className='feedback ok'; score++; }
+      else { feedback.textContent='✘ spróbuj jeszcze raz'; feedback.className='feedback bad'; }
+    }
+  });
+  document.getElementById('score').textContent = 'Wynik: ' + score + '/13';
+}
+generateQuiz(false);
+updateSlide();
+</script>
+</body>
+</html>
